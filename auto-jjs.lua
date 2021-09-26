@@ -282,13 +282,13 @@ function action()
 		end
 		
 		places = bump_places(places)
+		local jj_word = gen_from_place(places)
 		
-		--rs.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(jj_word, "All")
-		--ch.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		rs.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(jj_word, "All")
+		ch.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 		
-		print (gen_from_place(places), places[4], places[3], places[2], places[1])
 		completed_jjs = completed_jjs + 1
-		wait(0.8)
+		wait(1)
 	end
 end
 
