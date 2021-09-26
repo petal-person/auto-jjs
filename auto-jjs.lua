@@ -165,6 +165,7 @@ local jj_dict = {
 	},
 	
 	{
+		"TEN",
 		"TWENTY",
 		"THIRTY",
 		"FOURTY",
@@ -176,15 +177,15 @@ local jj_dict = {
 	},
 	
 	{
-		"HUNDREAD",
-		"TWO HUNDREAD",
-		"THREE HUNDREAD",
-		"FOUR HUNDREAD",
-		"FIVE HUNDREAD",
-		"SIX HUNDREAD",
-		"SEVEN HUNDREAD",
-		"EIGHT HUNDREAD",
-		"NINE HUNDREAD"
+		"ONE HUNDRED",
+		"TWO HUNDRED",
+		"THREE HUNDRED",
+		"FOUR HUNDRED",
+		"FIVE HUNDRED",
+		"SIX HUNDRED",
+		"SEVEN HUNDRED",
+		"EIGHT HUNDRED",
+		"NINE HUNDRED"
 	},
 	
 	{
@@ -200,23 +201,23 @@ local jj_dict = {
 	}
 }
 
-function get_place(place, index)
-	if (index == 0) then
-		return ""
+function gen_from_place(place_tab)
+	local p1 = place_tab[1]
+	local p2 = place_tab[2]
+	local p3 = place_tab[3]
+	local p4 = place_tab[4]
+	
+	local out_str = ""
+	
+	if (p4 >= 1) then out_str = jj_dict[4][p4] end
+	if (p3 >= 1) then out_str = out_str.. " ".. jj_dict[3][p3] end
+	if (p2 > 1 or (p2 == 1 and p1 == 0)) then out_str = out_str.. " ".. jj_dict[2][p2] end
+	if (p1 >= 1 and p2 ~= 1) then out_str = out_str.. " ".. jj_dict[1][p1] end
+	if (p2 == 1 and p1 >= 1) then
+		out_str = out_str.. " ".. jj_dict[1][tonumber("1"..p1)]
 	end
 	
-	return jj_dict[place][index]
-end
-
-function gen_from_place(place)
-	local p1 = place[1]
-	local p2 = math.clamp(place[2], 0, 8)
-	local p3 = place[3]
-	local p4 = place[4]
-	
-	
-	return (tostring(get_place(4, p4)).. " ".. tostring(get_place(3, p3)).. " ".. tostring(get_place(2, p2)).. " ".. tostring(get_place(1, p1))):match "^%s*(.-)%s*$"
-	
+	return out_str:match "^%s*(.-)%s*$"
 end
 
 
@@ -226,24 +227,13 @@ function bump_places(place_tab)
 	local p3 = place_tab[3]
 	local p4 = place_tab[4]
 	
-	if (p2 == 0 and p3 == 0 and p4 == 0) then
-		if (p1 < 19) then
-			p1 = p1 + 1
-		else
-			p1 = 0
-			p2 = 1
-		end
-		
-		return {p1, p2, p3, p4}
-	end
-	
 	if (p1 == 9) then
 		if (p2 == 9) then
 			if (p3 == 9) then
 				if (p4 ~= 9) then
 					p1 = 0
 					p2 = 0
-					p3 = 1
+					p3 = 0
 					p4 = p4 + 1
 				else
 					return {9,9,9,9}
@@ -292,11 +282,11 @@ function action()
 		end
 		
 		places = bump_places(places)
-		local jj_word = gen_from_place(places)
 		
-		rs.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(jj_word, "All")
-		ch.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		--rs.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(jj_word, "All")
+		--ch.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 		
+		print (gen_from_place(places), places[4], places[3], places[2], places[1])
 		completed_jjs = completed_jjs + 1
 		wait(0.8)
 	end
